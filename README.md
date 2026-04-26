@@ -57,7 +57,7 @@ A premium, full-stack digital infrastructure solution for electricity consumer c
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+).
 - **Backend**: Node.js, Express.js.
 - **Database**: MongoDB (Mongoose).
-- **Hosting**: Vercel (Frontend), Render (Backend).
+- **Hosting**: [Vercel](https://power-pulse-pdpkp23wq-kundusayanti16s-projects.vercel.app) (Frontend), [Railway](https://power-pulse-backend-production.up.railway.app/) (Backend).
 
 ---
 
