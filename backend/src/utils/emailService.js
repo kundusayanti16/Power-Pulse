@@ -2,13 +2,22 @@ import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const getTransporter = () => {
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS;
+  
+  // Skip if not set or if it's a placeholder
+  if (!user || !pass || user.includes('your') || user.includes('example')) {
+    return null;
+  }
+  
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user, pass },
+    connectionTimeout: 5000, // 5 seconds max to try connecting
+  });
+};
+
 
 export const sendTrackingIdEmail = async (email, name, trackingId, consumerId) => {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
@@ -35,10 +44,13 @@ export const sendTrackingIdEmail = async (email, name, trackingId, consumerId) =
       `,
     };
 
+    const transporter = getTransporter();
+    if (!transporter) return;
+
     await transporter.sendMail(mailOptions);
     console.log(`Tracking ID email sent to ${email}`);
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Error sending email:', error.message);
   }
 };
 
@@ -67,10 +79,13 @@ export const sendStatusUpdateEmail = async (email, name, trackingId, status, adm
       `,
     };
 
+    const transporter = getTransporter();
+    if (!transporter) return;
+
     await transporter.sendMail(mailOptions);
     console.log(`Status update email sent to ${email}`);
   } catch (error) {
-    console.error('Error sending status update email:', error);
+    console.error('Error sending status update email:', error.message);
   }
 };
 
@@ -97,9 +112,12 @@ export const sendOtpEmail = async (email, name, otp) => {
         </div>
       `,
     };
+    const transporter = getTransporter();
+    if (!transporter) return;
+
     await transporter.sendMail(mailOptions);
     console.log(`OTP email sent to ${email}`);
   } catch (error) {
-    console.error('Error sending OTP email:', error);
+    console.error('Error sending OTP email:', error.message);
   }
 };
