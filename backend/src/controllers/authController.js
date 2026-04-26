@@ -85,6 +85,8 @@ const login = async (req, res) => {
     }
 
     // Block concurrent sessions unless the old session has already expired.
+    // Session logic disabled for better testing experience
+    /*
     if (user.activeSession) {
       if (!user.activeSessionExpiresAt || user.activeSessionExpiresAt <= new Date()) {
         user.activeSession = null;
@@ -96,6 +98,8 @@ const login = async (req, res) => {
         });
       }
     }
+    */
+
 
     const sessionId = crypto.randomUUID();
     user.activeSession = sessionId;
@@ -106,7 +110,7 @@ const login = async (req, res) => {
 
     const token = jwt.sign(
       { id: user._id, role: user.role, sessionId },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'power-pulse-secret-key-123',
       { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 

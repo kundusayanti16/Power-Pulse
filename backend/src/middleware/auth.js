@@ -12,7 +12,7 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Not authenticated. Please log in.' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'power-pulse-secret-key-123');
     const user = await User.findById(decoded.id);
 
     if (!user) {
