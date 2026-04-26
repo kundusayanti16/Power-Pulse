@@ -11,6 +11,10 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendTrackingIdEmail = async (email, name, trackingId, consumerId) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn('Skipping email: EMAIL_USER or EMAIL_PASS not set.');
+    return;
+  }
   try {
     const mailOptions = {
       from: `"Smart Electricity Portal" <${process.env.EMAIL_USER}>`,
@@ -39,6 +43,10 @@ export const sendTrackingIdEmail = async (email, name, trackingId, consumerId) =
 };
 
 export const sendStatusUpdateEmail = async (email, name, trackingId, status, adminNote) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn('Skipping email: EMAIL_USER or EMAIL_PASS not set.');
+    return;
+  }
   try {
     const statusColor = status === 'resolved' ? '#00e676' : '#00d4ff';
     const mailOptions = {
@@ -67,6 +75,10 @@ export const sendStatusUpdateEmail = async (email, name, trackingId, status, adm
 };
 
 export const sendOtpEmail = async (email, name, otp) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn('Skipping email: EMAIL_USER or EMAIL_PASS not set.');
+    return;
+  }
   try {
     const mailOptions = {
       from: `"Smart Electricity Portal" <${process.env.EMAIL_USER}>`,
