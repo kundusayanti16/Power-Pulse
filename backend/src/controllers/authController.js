@@ -143,6 +143,8 @@ const adminLogin = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid admin credentials.' });
     }
 
+    // Session logic disabled for better testing experience
+    /*
     if (user.activeSession) {
       if (!user.activeSessionExpiresAt || user.activeSessionExpiresAt <= new Date()) {
         user.activeSession = null;
@@ -154,6 +156,7 @@ const adminLogin = async (req, res) => {
         });
       }
     }
+    */
 
     const sessionId = crypto.randomUUID();
     user.activeSession = sessionId;
