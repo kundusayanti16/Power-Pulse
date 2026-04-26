@@ -59,14 +59,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial loads
   initMap();
-  loadStats();
-  loadComplaints();
+  Promise.all([loadStats(), loadComplaints()]);
   
-  // Suggestion 5: Real-time updates (check every 15 seconds)
+  // Real-time updates (check every 30 seconds if tab is visible)
   setInterval(() => {
-    loadStats();
-    loadComplaints(true); // silent refresh
-  }, 15000);
+    if (document.visibilityState === 'visible') {
+      Promise.all([loadStats(), loadComplaints(true)]);
+    }
+  }, 30000);
 });
 
 // ── Live Map ──────────────────────────────────────────────────────────────────
@@ -128,8 +128,12 @@ async function loadStats() {
     setText('footer-pending',  s.pending       ?? '--');
     setText('footer-resolved', s.resolved      ?? '--');
     setText('footer-rate',    (s.resolutionRate ?? '--') + '%');
+    
+    // Draw both charts using pre-loaded stats
     drawCharts(s);
-  } catch {}
+  } catch (err) {
+    console.error('Failed to load stats:', err);
+  }
 }
 
 // ── Charts ────────────────────────────────────────────────────────────────────
@@ -137,7 +141,7 @@ let chartStatus = null, chartTypes = null;
 function drawCharts(s) {
   const colors = ['#ff4444','#00d4ff','#00e676'];
 
-  // Status donut
+  // 1. Status distribution (Doughnut)
   const ctxS = document.getElementById('chart-status')?.getContext('2d');
   if (ctxS) {
     if (chartStatus) chartStatus.destroy();
@@ -147,31 +151,34 @@ function drawCharts(s) {
         labels: ['Pending','In Progress','Resolved'],
         datasets: [{ data: [s.pending||0, s.inProgress||0, s.resolved||0], backgroundColor: colors, borderWidth: 0 }],
       },
-      options: { plugins: { legend: { labels: { color: '#7a9bbf' } } }, cutout: '65%' },
+      options: { 
+        plugins: { legend: { labels: { color: '#7a9bbf' } } }, 
+        cutout: '65%',
+        responsive: true,
+        maintainAspectRatio: false
+      },
     });
   }
 
-  // Problem types bar — loaded separately
-  loadProblemTypeChart();
-}
-
-async function loadProblemTypeChart() {
-  try {
-    const types  = ['power outage','voltage fluctuation','transformer issue','meter issue'];
-    const counts = await Promise.all(types.map(async t => {
-      const r = await apiFetch(`/admin/complaints?problemType=${encodeURIComponent(t)}&limit=1`);
-      return r?.data?.total ?? 0;
-    }));
-    const ctxT = document.getElementById('chart-types')?.getContext('2d');
-    if (!ctxT) return;
+  // 2. Problem Categories (Bar Chart)
+  const ctxT = document.getElementById('chart-types')?.getContext('2d');
+  if (ctxT && s.typeCounts) {
     if (chartTypes) chartTypes.destroy();
+    const typeLabels = ['Outage','Voltage','Transformer','Meter'];
+    const typeData = [
+      s.typeCounts['power outage'] || 0,
+      s.typeCounts['voltage fluctuation'] || 0,
+      s.typeCounts['transformer issue'] || 0,
+      s.typeCounts['meter issue'] || 0
+    ];
+
     chartTypes = new Chart(ctxT, {
       type: 'bar',
       data: {
-        labels: ['Outage','Voltage','Transformer','Meter'],
+        labels: typeLabels,
         datasets: [{
           label: 'Complaints',
-          data: counts,
+          data: typeData,
           backgroundColor: ['#ff4444','#f5c518','#00d4ff','#00e676'],
           borderRadius: 6,
           borderWidth: 0,
@@ -179,13 +186,15 @@ async function loadProblemTypeChart() {
       },
       options: {
         plugins: { legend: { display: false } },
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
           x: { ticks: { color: '#7a9bbf' }, grid: { color: 'rgba(0,212,255,0.05)' } },
           y: { ticks: { color: '#7a9bbf' }, grid: { color: 'rgba(0,212,255,0.05)' }, beginAtZero: true },
         },
       },
     });
-  } catch {}
+  }
 }
 
 // ── Active Complaints ─────────────────────────────────────────────────────────
@@ -436,8 +445,6 @@ async function forceLogout(userId) {
     }
   } catch {
     showToast('Network error.', 'error');
-  }
-}
   }
 }
 

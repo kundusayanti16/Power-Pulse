@@ -97,8 +97,12 @@ const updateComplaintStatus = async (req, res) => {
 // ── Get all users ─────────────────────────────────────────────────────────────
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({ role: 'user' }).sort({ createdAt: -1 });
-    res.json({ success: true, users });
+    const { page = 1, limit = 20 } = req.query;
+    const [users, total] = await Promise.all([
+      User.find({ role: 'user' }).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(Number(limit)),
+      User.countDocuments({ role: 'user' }),
+    ]);
+    res.json({ success: true, users, total, page: Number(page), pages: Math.ceil(total / limit) });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Error fetching users.' });
   }
@@ -117,8 +121,12 @@ const getLoginLogs = async (req, res) => {
 // ── Get Contact Messages ──────────────────────────────────────────────────────
 const getContactMessages = async (req, res) => {
   try {
-    const messages = await ContactMessage.find().sort({ createdAt: -1 });
-    res.json({ success: true, messages });
+    const { page = 1, limit = 20 } = req.query;
+    const [messages, total] = await Promise.all([
+      ContactMessage.find().sort({ createdAt: -1 }).skip((page - 1) * limit).limit(Number(limit)),
+      ContactMessage.countDocuments(),
+    ]);
+    res.json({ success: true, messages, total, page: Number(page), pages: Math.ceil(total / limit) });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Error fetching contact messages.' });
   }

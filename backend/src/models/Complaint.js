@@ -54,4 +54,10 @@ const complaintSchema = new mongoose.Schema({
   },
 });
 
+complaintSchema.index({ status: 1 });
+complaintSchema.index({ problemType: 1 });
+complaintSchema.index({ escalated: 1 });
+complaintSchema.index({ createdAt: -1 });
+complaintSchema.index({ trackingId: 1 });
+
 export default mongoose.model('Complaint', complaintSchema);
