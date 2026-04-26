@@ -15,6 +15,7 @@ import feedbackRoutes from './routes/feedbackRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 
 const app = express();
+app.set('trust proxy', 1);
 
 // ── Security Middleware ──────────────────────────────────────────────────────
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
