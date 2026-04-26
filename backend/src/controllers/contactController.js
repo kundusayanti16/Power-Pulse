@@ -2,6 +2,8 @@ import ContactMessage from '../models/ContactMessage.js';
 
 export const submitContact = async (req, res) => {
   try {
+    console.log('--- Received Contact Message ---');
+    console.log('Body:', req.body);
     const { name, email, subject, message } = req.body;
     
     if (!name || !email || !subject || !message) {

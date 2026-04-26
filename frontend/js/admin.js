@@ -71,13 +71,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── Live Map ──────────────────────────────────────────────────────────────────
 function initMap() {
-  if (map) return;
-  // Initialize map centered at a default location (e.g., Punjab area if possible, or general India)
+  if (map || typeof L === 'undefined') return;
+  const container = document.getElementById('outage-map');
+  if (!container) return;
+
+  // Initialize map centered at a default location
   map = L.map('outage-map').setView([31.25, 75.70], 10); 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CARTO'
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
+  
   markersLayer = L.layerGroup().addTo(map);
+  
+  // Fix for map not rendering properly in some containers
+  setTimeout(() => {
+    if (map) {
+      map.invalidateSize();
+      window.dispatchEvent(new Event('resize'));
+    }
+  }, 500);
 }
 
 function updateMapMarkers(complaints) {
@@ -141,19 +153,23 @@ let chartStatus = null, chartTypes = null;
 function drawCharts(s) {
   const colors = ['#ff4444','#00d4ff','#00e676'];
 
-  // 1. Status distribution (Doughnut)
+  // 1. Status distribution (Pie Chart)
   const ctxS = document.getElementById('chart-status')?.getContext('2d');
   if (ctxS) {
     if (chartStatus) chartStatus.destroy();
     chartStatus = new Chart(ctxS, {
-      type: 'doughnut',
+      type: 'pie',
       data: {
         labels: ['Pending','In Progress','Resolved'],
-        datasets: [{ data: [s.pending||0, s.inProgress||0, s.resolved||0], backgroundColor: colors, borderWidth: 0 }],
+        datasets: [{ data: [s.pending||0, s.inProgress||0, s.resolved||0], backgroundColor: colors, borderWidth: 1, borderColor: '#1a1a2e' }],
       },
       options: { 
-        plugins: { legend: { labels: { color: '#7a9bbf' } } }, 
-        cutout: '65%',
+        plugins: { 
+          legend: { 
+            position: 'bottom',
+            labels: { color: '#7a9bbf', font: { size: 11 } } 
+          } 
+        }, 
         responsive: true,
         maintainAspectRatio: false
       },
@@ -164,13 +180,10 @@ function drawCharts(s) {
   const ctxT = document.getElementById('chart-types')?.getContext('2d');
   if (ctxT && s.typeCounts) {
     if (chartTypes) chartTypes.destroy();
-    const typeLabels = ['Outage','Voltage','Transformer','Meter'];
-    const typeData = [
-      s.typeCounts['power outage'] || 0,
-      s.typeCounts['voltage fluctuation'] || 0,
-      s.typeCounts['transformer issue'] || 0,
-      s.typeCounts['meter issue'] || 0
-    ];
+    
+    // Get labels and data dynamically from the stats object
+    const typeLabels = Object.keys(s.typeCounts).map(t => t.charAt(0).toUpperCase() + t.slice(1));
+    const typeData = Object.values(s.typeCounts);
 
     chartTypes = new Chart(ctxT, {
       type: 'bar',
@@ -179,7 +192,7 @@ function drawCharts(s) {
         datasets: [{
           label: 'Complaints',
           data: typeData,
-          backgroundColor: ['#ff4444','#f5c518','#00d4ff','#00e676'],
+          backgroundColor: ['#ff4444','#f5c518','#00d4ff','#00e676','#a29bfe','#fab1a0'],
           borderRadius: 6,
           borderWidth: 0,
         }],
@@ -382,7 +395,8 @@ async function loadInquiries() {
           </tbody>
         </table>
       </div>`;
-  } catch {
+  } catch (err) {
+    console.error('Failed to load inquiries:', err);
     el.innerHTML = '<p style="color:var(--accent-red);">Network error.</p>';
   }
 }

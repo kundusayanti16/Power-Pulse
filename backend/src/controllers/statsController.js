@@ -17,18 +17,10 @@ const getStats = async (req, res) => {
     const totalFiled = activeCount + resolvedCount;
     const resolutionRate = totalFiled > 0 ? Math.round((resolvedCount / totalFiled) * 100) : 0;
 
-    // Convert typeStats array to a more usable object or keep as is. 
-    // The frontend expects counts for specific types.
-    const typeCounts = {
-      'power outage': 0,
-      'voltage fluctuation': 0,
-      'transformer issue': 0,
-      'meter issue': 0
-    };
+    // Convert typeStats array to a dynamic object
+    const typeCounts = {};
     typeStats.forEach(stat => {
-      if (typeCounts.hasOwnProperty(stat._id)) {
-        typeCounts[stat._id] = stat.count;
-      }
+      typeCounts[stat._id] = stat.count;
     });
 
     res.json({
