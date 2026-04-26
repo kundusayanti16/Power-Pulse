@@ -5,7 +5,7 @@
 // ── API base URL ──────────────────────────────────────────────────────────────
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:5002/api'
-  : 'https://power-pulse-backend-production.up.railway.app/api';
+  : '/api';
 
 // ── Auth helpers ──────────────────────────────────────────────────────────────
 function getToken()  { return localStorage.getItem('ep_token'); }

@@ -91,6 +91,12 @@
 
 import dotenv from 'dotenv';
 dotenv.config();
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 import express from 'express';
 import mongoose from 'mongoose';
@@ -171,6 +177,16 @@ app.use('/api/stats', statsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/contact', contactRoutes);
+
+// ── Serve Frontend ─────────────────────────────────
+app.use(express.static(path.join(__dirname, '../../frontend')));
+
+// Catch-all to serve index.html for any non-API route
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+  res.sendFile(path.join(__dirname, '../../frontend/index.html'));
+});
+
 
 
 // ── Health Check ───────────────────────────────────
