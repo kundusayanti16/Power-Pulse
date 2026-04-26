@@ -50,8 +50,8 @@ if (registerForm) {
       showErr('email-err', 'This email looks fake or invalid. Please use a real email.'); valid = false;
     }
     if (!phone)      { showErr('phone-err', 'Phone number is required.');    valid = false; }
-    else if (!/^[6-9]\d{9}$/.test(phone)) {
-      showErr('phone-err', 'Invalid phone number. Must be a 10-digit number (e.g. 9876543210).'); valid = false;
+    else if (!/^(\+91|0)?[6-9]\d{9}$/.test(phone)) {
+      showErr('phone-err', 'Invalid phone number. Use 10 digits (e.g. 9876543210) or include +91.'); valid = false;
     }
     if (!consumerId) { showErr('cid-err', 'Consumer ID is required.');       valid = false; }
     if (!password)   { showErr('pass-err', 'Password is required.');         valid = false; }
