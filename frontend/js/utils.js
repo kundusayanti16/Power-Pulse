@@ -140,8 +140,11 @@ function updateNavAuth() {
 
 // ── Logout handler ────────────────────────────────────────────────────────────
 async function handleLogout() {
-  try { await apiFetch('/auth/logout', { method: 'POST' }); } catch {}
+  console.log('🚪 [DEBUG] Logout initiated...');
+  try { await apiFetch('/auth/logout', { method: 'POST' }); } catch (err) { console.error('Logout API failed:', err); }
+  console.log('🧹 [DEBUG] Clearing local auth data...');
   clearAuth();
+  console.log('🏠 [DEBUG] Redirecting to login.html');
   window.location.href = 'login.html';
 }
 
@@ -179,8 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollProgress();
   loadFooterStats();
 
-  const logoutBtn = document.getElementById('nav-logout');
-  if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+  // Attach logout to any button with id nav-logout or class btn-logout
+  document.querySelectorAll('#nav-logout, .btn-logout').forEach(btn => {
+    btn.addEventListener('click', handleLogout);
+  });
 
   // Force clear login forms for security so they don't retain credentials
   const loginForm = document.getElementById('login-form');
