@@ -125,7 +125,7 @@ app.use(mongoSanitize());
 // ── CORS Configuration ─────────────────────────────
 const allowedOrigins = (
   process.env.CLIENT_URL ||
-  'https://power-pulse-pdpkp23wq-kundusayanti16s-projects.vercel.app,http://localhost:5500'
+  'https://power-pulse-pdpkp23wq-kundusayanti16s-projects.vercel.app,https://power-pulse-iota.vercel.app,http://localhost:5500'
 )
 .split(',')
 .map(origin => origin.trim());
