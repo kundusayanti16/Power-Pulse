@@ -431,7 +431,11 @@ async function forceLogout(userId) {
     showToast('Network error.', 'error');
   }
 }
-window.forceLogout = forceLogout; // Make accessible to onclick
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.submitStatusUpdate = submitStatusUpdate;
+window.forceLogout = forceLogout; // Already there but grouped now
+
 
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
