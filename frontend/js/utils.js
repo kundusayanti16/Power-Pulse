@@ -3,9 +3,11 @@
    =================================================== */
 
 // ── API base URL ──────────────────────────────────────────────────────────────
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:5002/api'
   : '/api';
+
+console.log('[DEBUG] API_BASE is:', API_BASE);
 
 // ── Auth helpers ──────────────────────────────────────────────────────────────
 function getToken()  { return localStorage.getItem('ep_token'); }
@@ -68,18 +70,40 @@ function triggerCircuitGlow() {
 }
 
 // ── Live footer stats ─────────────────────────────────────────────────────────
-async function loadFooterStats() {
+async function loadStats() {
   try {
-    const res = await fetch(`${API_BASE}/stats`);
-    const json = await res.json();
-    if (!json.success) return;
-    const s = json.stats;
-    setText('stat-total',    s.totalFiled    ?? '--');
-    setText('stat-pending',  s.pending       ?? '--');
-    setText('stat-resolved', s.resolved      ?? '--');
-    setText('stat-rate',    (s.resolutionRate ?? '--') + '%');
-  } catch { /* silently fail */ }
+    console.log('[DEBUG] Loading stats...');
+    const res = await apiFetch('/stats');
+    if (!res?.ok) {
+      console.error('[DEBUG] Stats fetch failed:', res);
+      return;
+    }
+    
+    const s = res.data.stats;
+    if (!s) {
+      console.error('[DEBUG] No stats data in response');
+      return;
+    }
+
+    console.log('[DEBUG] Stats loaded successfully:', s);
+    
+    setText('stat-total',      s.totalFiled    ?? '--');
+    setText('stat-pending',    s.pending       ?? '--');
+    setText('stat-inprogress', s.inProgress    ?? '--');
+    setText('stat-resolved',   s.resolved      ?? '--');
+    setText('stat-rate',      (s.resolutionRate ?? '--') + '%');
+    setText('footer-total',    s.totalFiled    ?? '--');
+    setText('footer-pending',  s.pending       ?? '--');
+    setText('footer-resolved', s.resolved      ?? '--');
+    setText('footer-rate',    (s.resolutionRate ?? '--') + '%');
+    
+    // Draw both charts using pre-loaded stats
+    drawCharts(s);
+  } catch (err) {
+    console.error('[DEBUG] Error in loadStats:', err);
+  }
 }
+
 function setText(id, val) {
   const el = document.getElementById(id);
   if (el) el.textContent = val;

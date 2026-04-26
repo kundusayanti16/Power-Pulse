@@ -1,6 +1,7 @@
 /* ===================================================
    admin.js – Admin Dashboard logic
    =================================================== */
+console.log('🚀 [DEBUG] admin.js loaded at ' + new Date().toLocaleTimeString());
 
 let currentPage = 1;
 let totalPages  = 1;
@@ -125,26 +126,35 @@ function updateMapMarkers(complaints) {
 }
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
+// loadStats is handled in admin.js for dashboard-specific logic
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
 async function loadStats() {
   try {
-    const res = await fetch(`${API_BASE}/stats`);
-    const json = await res.json();
-    if (!json.success) return;
-    const s = json.stats;
+    console.log('[DEBUG] Admin: Loading stats...');
+    const res = await apiFetch('/stats');
+    if (!res?.ok) throw new Error('Failed to fetch stats');
+
+    const s = res.data.stats;
+    if (!s) return;
+
     setText('stat-total',      s.totalFiled    ?? '--');
     setText('stat-pending',    s.pending       ?? '--');
     setText('stat-inprogress', s.inProgress    ?? '--');
     setText('stat-resolved',   s.resolved      ?? '--');
     setText('stat-rate',      (s.resolutionRate ?? '--') + '%');
+    
     setText('footer-total',    s.totalFiled    ?? '--');
     setText('footer-pending',  s.pending       ?? '--');
     setText('footer-resolved', s.resolved      ?? '--');
     setText('footer-rate',    (s.resolutionRate ?? '--') + '%');
     
-    // Draw both charts using pre-loaded stats
     drawCharts(s);
   } catch (err) {
-    console.error('Failed to load stats:', err);
+    console.error('[DEBUG] loadStats Error:', err);
   }
 }
 

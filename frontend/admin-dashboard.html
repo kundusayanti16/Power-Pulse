@@ -63,16 +63,22 @@
     <!-- Charts -->
     <!-- Map Section -->
     <h3 style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent-yellow);margin-bottom:1rem;">🛰️ Live Outage Map</h3>
-    <div id="outage-map"></div>
+    <div id="outage-map" style="display:flex;align-items:center;justify-content:center;color:var(--text-muted);">
+      <p>Initializing Live Map...</p>
+    </div>
 
     <div class="charts-grid">
       <div class="chart-card">
         <h3 style="font-family:var(--font-display);font-size:0.95rem;color:var(--accent-blue);margin-bottom:1rem;">Complaint Status Distribution</h3>
-        <canvas id="chart-status" height="200"></canvas>
+        <div style="height:200px;display:flex;align-items:center;justify-content:center;">
+          <canvas id="chart-status"></canvas>
+        </div>
       </div>
       <div class="chart-card">
         <h3 style="font-family:var(--font-display);font-size:0.95rem;color:var(--accent-blue);margin-bottom:1rem;">Problem Categories</h3>
-        <canvas id="chart-types" height="200"></canvas>
+        <div style="height:200px;display:flex;align-items:center;justify-content:center;">
+          <canvas id="chart-types"></canvas>
+        </div>
       </div>
     </div>
 
