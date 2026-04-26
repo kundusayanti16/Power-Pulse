@@ -309,7 +309,7 @@ async function loadUsers() {
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>Name</th><th>Email</th><th>Consumer ID</th><th>Phone</th><th>Active Session</th><th>Registered</th>
+            <th>Name</th><th>Email</th><th>Consumer ID</th><th>Phone</th><th>Active Session</th><th>Registered</th><th>Actions</th>
           </tr></thead>
           <tbody>
             ${users.map(u => `
@@ -324,6 +324,11 @@ async function loadUsers() {
                     : '<span style="color:var(--text-dim);font-size:0.8rem;">None</span>'}
                 </td>
                 <td style="font-size:0.8rem;color:var(--text-dim);">${new Date(u.createdAt).toLocaleDateString()}</td>
+                <td>
+                  <button class="btn btn-outline btn-sm" style="color:var(--accent-red); border-color:var(--accent-red);" onclick="forceLogout('${u._id}')">
+                    Force Logout
+                  </button>
+                </td>
               </tr>
             `).join('')}
           </tbody>
@@ -411,6 +416,23 @@ async function submitStatusUpdate() {
     btn.disabled = false; btn.textContent = 'Update Status';
   }
 }
+
+async function forceLogout(userId) {
+  if (!confirm('Are you sure you want to force logout this user?')) return;
+  try {
+    const res = await apiFetch(`/admin/users/${userId}/force-logout`, { method: 'POST' });
+    if (res?.ok) {
+      showToast(res.data.message, 'success');
+      loadUsers();
+    } else {
+      showToast('Failed to force logout.', 'error');
+    }
+  } catch {
+    showToast('Network error.', 'error');
+  }
+}
+window.forceLogout = forceLogout; // Make accessible to onclick
+
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function badgeHtml(status) {

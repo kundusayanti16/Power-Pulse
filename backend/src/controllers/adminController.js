@@ -138,6 +138,16 @@ const escalateStale = async (req, res) => {
   }
 };
 
+const forceLogoutUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await User.findByIdAndUpdate(id, { activeSession: null, activeSessionExpiresAt: null });
+    res.json({ success: true, message: 'User has been forced to log out.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Error forcing logout.' });
+  }
+};
+
 export { 
   getAllComplaints, 
   updateComplaintStatus, 
@@ -145,5 +155,6 @@ export {
   getAllUsers, 
   getLoginLogs, 
   getContactMessages,
-  escalateStale 
+  escalateStale,
+  forceLogoutUser
 };
