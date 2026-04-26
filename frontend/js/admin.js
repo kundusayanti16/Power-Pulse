@@ -8,6 +8,13 @@ let currentComplaintId = null;
 let map = null;
 let markersLayer = null;
 
+// Expose functions to global scope for dynamic HTML (onclick)
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.submitStatusUpdate = submitStatusUpdate;
+window.forceLogout = forceLogout;
+
+
 document.addEventListener('DOMContentLoaded', () => {
   // Auth guard
   if (!isLoggedIn() || !isAdmin()) {
@@ -431,10 +438,8 @@ async function forceLogout(userId) {
     showToast('Network error.', 'error');
   }
 }
-window.openModal = openModal;
-window.closeModal = closeModal;
-window.submitStatusUpdate = submitStatusUpdate;
-window.forceLogout = forceLogout; // Already there but grouped now
+  }
+}
 
 
 
