@@ -6,16 +6,26 @@ const getTransporter = () => {
   const user = process.env.EMAIL_USER;
   const pass = process.env.EMAIL_PASS;
   
-  // Skip if not set or if it's a placeholder
   if (!user || !pass || user.includes('your') || user.includes('example')) {
+    console.warn('⚠️ Email credentials not properly set in .env');
     return null;
   }
   
-  return nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: { user, pass },
-    connectionTimeout: 5000, // 5 seconds max to try connecting
   });
+
+  // Verify connection configuration
+  transporter.verify((error, success) => {
+    if (error) {
+      console.error('❌ Email Transporter Error:', error.message);
+    } else {
+      console.log('✅ Email Transporter is ready to send messages');
+    }
+  });
+
+  return transporter;
 };
 
 
@@ -121,3 +131,6 @@ export const sendOtpEmail = async (email, name, otp) => {
     console.error('Error sending OTP email:', error.message);
   }
 };
+
+// Test email connection on startup
+getTransporter();

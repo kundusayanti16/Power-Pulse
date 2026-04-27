@@ -140,19 +140,20 @@ function updateNavAuth() {
 // ── Logout handler ────────────────────────────────────────────────────────────
 async function handleLogout() {
   console.log('🚪 [DEBUG] Logout initiated...');
-  // Force clear local data first for immediate effect
   const wasAdmin = isAdmin();
+  
+  // 1. Clear local data first
   clearAuth();
   
+  // 2. Redirect immediately
+  const target = wasAdmin ? 'admin-login.html' : 'login.html';
+  console.log(`🏠 [DEBUG] Redirecting to ${target}`);
+  window.location.href = target;
+
+  // 3. Try to notify backend in background (optional/best effort)
   try { 
-    // Attempt to notify backend, but don't wait forever
-    await apiFetch('/auth/logout', { method: 'POST' }); 
-  } catch (err) { 
-    console.error('Logout API failed:', err); 
-  }
-  
-  console.log('🏠 [DEBUG] Redirecting...');
-  window.location.href = wasAdmin ? 'admin-login.html' : 'login.html';
+    apiFetch('/auth/logout', { method: 'POST' }).catch(() => {}); 
+  } catch (err) {}
 }
 window.handleLogout = handleLogout;
 
