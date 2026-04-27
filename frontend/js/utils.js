@@ -3,9 +3,8 @@
    =================================================== */
 
 // ── API base URL ──────────────────────────────────────────────────────────────
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:5002/api'
-  : '/api';
+// Pointing directly to production backend as requested
+const API_BASE = 'https://power-pulse-backend-production.up.railway.app/api';
 
 console.log('[DEBUG] API_BASE is:', API_BASE);
 
@@ -141,12 +140,21 @@ function updateNavAuth() {
 // ── Logout handler ────────────────────────────────────────────────────────────
 async function handleLogout() {
   console.log('🚪 [DEBUG] Logout initiated...');
-  try { await apiFetch('/auth/logout', { method: 'POST' }); } catch (err) { console.error('Logout API failed:', err); }
-  console.log('🧹 [DEBUG] Clearing local auth data...');
+  // Force clear local data first for immediate effect
+  const wasAdmin = isAdmin();
   clearAuth();
-  console.log('🏠 [DEBUG] Redirecting to login.html');
-  window.location.href = 'login.html';
+  
+  try { 
+    // Attempt to notify backend, but don't wait forever
+    await apiFetch('/auth/logout', { method: 'POST' }); 
+  } catch (err) { 
+    console.error('Logout API failed:', err); 
+  }
+  
+  console.log('🏠 [DEBUG] Redirecting...');
+  window.location.href = wasAdmin ? 'admin-login.html' : 'login.html';
 }
+window.handleLogout = handleLogout;
 
 // ── Scroll Progress Bar ───────────────────────────────────────────────────────
 function initScrollProgress() {
