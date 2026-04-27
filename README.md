@@ -20,9 +20,14 @@ A premium, full-stack digital infrastructure solution for electricity consumer c
 5. In the Render Dashboard, go to your service > **Environment** and add the following keys from your `backend/.env`:
    - `MONGO_URI`
    - `JWT_SECRET`
-   - `EMAIL_USER`
-   - `EMAIL_PASS`
-   - `CLIENT_URL` (Set this to your Vercel URL once deployed)
+   - `EMAIL_USER`: Your Gmail address.
+   - `EMAIL_PASS`: A 16-character **Google App Password** (not your regular password).
+   - `CLIENT_URL`: Set this to your Vercel URL once deployed.
+
+#### 📧 How to get `EMAIL_PASS`:
+1. Enable **2-Step Verification** on your Gmail account.
+2. Search for **"App passwords"** in Google Account settings.
+3. Generate a password for "Other (PowerPulse)" and copy the 16-character code.
 
 ### 3. Frontend (Vercel)
 1. Log in to [Vercel](https://vercel.com/).
