@@ -18,7 +18,7 @@ const seedAdmin = async () => {
     // Create the admin user
     const hashedPassword = await bcrypt.hash('Admin@123', 12);
     await User.create({
-      name: "Super Admin",
+      name: "ADMIN",
       email: "admin@portal.com",
       phone: "+911234567890",
       consumerId: "ADMIN001",
