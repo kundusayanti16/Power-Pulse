@@ -3,11 +3,20 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true, // use SSL
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  // Add these options to prevent timeouts on cloud platforms (Railway/Render)
+  pool: true, // use pooled connection
+  maxConnections: 1,
+  maxMessages: 10,
+  tls: {
+    rejectUnauthorized: false // helps with some strict cloud environments
+  }
 });
 
 export const sendTrackingIdEmail = async (email, name, trackingId, consumerId) => {
