@@ -67,7 +67,7 @@ A premium, full-stack digital infrastructure solution for electricity consumer c
 ---
 
 ## 📧 Contact Support
-**Technical Lead**: Sayanti  
+**Technical Lead**: Sayanti and Pragathi
 **Email**: projec262@gmail.com  
 **Office**: Girls Hostel, LPU, Punjab
 
