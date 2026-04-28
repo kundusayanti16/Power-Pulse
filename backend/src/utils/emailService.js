@@ -77,6 +77,7 @@ export const sendTrackingIdEmail = async (email, name, trackingId, consumerId) =
     console.log(`Tracking ID email sent to ${email}`);
   } catch (error) {
     console.error('Error sending email:', error.message);
+    throw error; // Throwing error so controller can catch it
   }
 };
 
@@ -112,6 +113,7 @@ export const sendStatusUpdateEmail = async (email, name, trackingId, status, adm
     console.log(`Status update email sent to ${email}`);
   } catch (error) {
     console.error('Error sending status update email:', error.message);
+    throw error;
   }
 };
 
@@ -145,6 +147,7 @@ export const sendOtpEmail = async (email, name, otp) => {
     console.log(`OTP email sent to ${email}`);
   } catch (error) {
     console.error('Error sending OTP email:', error.message);
+    throw error;
   }
 };
 
