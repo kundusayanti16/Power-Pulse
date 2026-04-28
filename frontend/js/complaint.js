@@ -92,14 +92,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!res) return;
         if (res.ok) {
           triggerCircuitGlow();
-          // Pop-up message as requested
-          alert(`NOTE: This Tracking ID is ${res.data.complaint.trackingId}. Please save it for any future details.`);
           
           // Show success card
           document.getElementById('complaint-section').style.display = 'none';
           document.getElementById('success-card').style.display       = 'block';
           document.getElementById('tracking-id-display').textContent  = res.data.complaint.trackingId;
-          showToast('Complaint filed successfully!', 'success');
+          
+          // Show toast instead of blocking alert
+          showToast(`Complaint filed successfully! Tracking ID: ${res.data.complaint.trackingId}`, 'success', 8000);
           loadMyComplaints();
         } else {
           showToast(res.data.message || 'Failed to submit complaint.', 'error');
