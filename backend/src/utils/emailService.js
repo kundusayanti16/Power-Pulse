@@ -5,31 +5,15 @@ dotenv.config();
 const getTransporter = () => {
   const user = process.env.EMAIL_USER;
   const pass = process.env.EMAIL_PASS;
-  
+
   if (!user || !pass || user.includes('your') || user.includes('example')) {
     console.warn('⚠️ Email credentials not properly set in environment variables');
     return null;
   }
-  
+
   const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, 
-    auth: { user, pass },
-    family: 4,
-    logger: {
-      info: (m) => console.log(`[MAIL INFO]: ${m}`),
-      debug: (m) => console.log(`[MAIL DEBUG]: ${m}`),
-      error: (m) => console.error(`[MAIL ERROR]: ${JSON.stringify(m)}`)
-    },
-    debug: true,
-    tls: {
-      rejectUnauthorized: false,
-      minVersion: 'TLSv1.2'
-    },
-    connectionTimeout: 30000, // 30 seconds
-    greetingTimeout: 15000,
-    socketTimeout: 30000
+    service: 'gmail',
+    auth: { user, pass }
   });
 
   // Verify connection configuration
@@ -77,7 +61,6 @@ export const sendTrackingIdEmail = async (email, name, trackingId, consumerId) =
     console.log(`Tracking ID email sent to ${email}`);
   } catch (error) {
     console.error('Error sending email:', error.message);
-    throw error; // Throwing error so controller can catch it
   }
 };
 
@@ -113,7 +96,6 @@ export const sendStatusUpdateEmail = async (email, name, trackingId, status, adm
     console.log(`Status update email sent to ${email}`);
   } catch (error) {
     console.error('Error sending status update email:', error.message);
-    throw error;
   }
 };
 
@@ -147,7 +129,6 @@ export const sendOtpEmail = async (email, name, otp) => {
     console.log(`OTP email sent to ${email}`);
   } catch (error) {
     console.error('Error sending OTP email:', error.message);
-    throw error;
   }
 };
 
