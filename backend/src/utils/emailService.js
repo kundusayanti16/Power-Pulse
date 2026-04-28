@@ -13,22 +13,23 @@ const getTransporter = () => {
   
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // Use SSL for port 465
+    port: 587,
+    secure: false, 
     auth: { user, pass },
-    family: 4, // Force IPv4
+    family: 4,
     logger: {
       info: (m) => console.log(`[MAIL INFO]: ${m}`),
       debug: (m) => console.log(`[MAIL DEBUG]: ${m}`),
-      error: (m) => console.error(`[MAIL ERROR]: ${m}`)
+      error: (m) => console.error(`[MAIL ERROR]: ${JSON.stringify(m)}`)
     },
     debug: true,
     tls: {
-      rejectUnauthorized: false
+      rejectUnauthorized: false,
+      minVersion: 'TLSv1.2'
     },
-    connectionTimeout: 20000,
-    greetingTimeout: 10000,
-    socketTimeout: 20000
+    connectionTimeout: 30000, // 30 seconds
+    greetingTimeout: 15000,
+    socketTimeout: 30000
   });
 
   // Verify connection configuration
