@@ -16,16 +16,15 @@ const getTransporter = () => {
     port: 587,
     secure: false, // Use STARTTLS
     auth: { user, pass },
-    family: 4, // Force IPv4 to prevent IPv6 timeouts on Railway
-    pool: true,
-    maxConnections: 1,
-    maxMessages: 10,
+    family: 4, // Force IPv4
+    logger: true, // Log everything to console for debugging
+    debug: true,  // Show debug info
     tls: {
       rejectUnauthorized: false
     },
-    connectionTimeout: 10000,
-    greetingTimeout: 5000,
-    socketTimeout: 10000
+    connectionTimeout: 20000, // Increase to 20 seconds
+    greetingTimeout: 10000,
+    socketTimeout: 20000
   });
 
   // Verify connection configuration
