@@ -7,13 +7,24 @@ const getTransporter = () => {
   const pass = process.env.EMAIL_PASS;
   
   if (!user || !pass || user.includes('your') || user.includes('example')) {
-    console.warn('⚠️ Email credentials not properly set in .env');
+    console.warn('⚠️ Email credentials not properly set in environment variables');
     return null;
   }
   
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // Use STARTTLS
     auth: { user, pass },
+    pool: true, // Use pooled connection to avoid handshake overhead
+    maxConnections: 1,
+    maxMessages: 10,
+    tls: {
+      rejectUnauthorized: false // Helps with some cloud network restrictions
+    },
+    connectionTimeout: 10000, // 10 seconds timeout
+    greetingTimeout: 5000,
+    socketTimeout: 10000
   });
 
   // Verify connection configuration
