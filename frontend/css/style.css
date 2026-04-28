@@ -110,7 +110,25 @@ main, section, .page-wrapper { position: relative; z-index: 1; }
   gap: 0.6rem;
   text-decoration: none;
 }
-.nav-brand .bolt { font-size: 1.6rem; filter: drop-shadow(0 0 8px var(--accent-yellow)); }
+.nav-brand .bolt { 
+  font-size: 1.6rem; 
+  filter: drop-shadow(0 0 8px var(--accent-yellow));
+  animation: bulbGlow 2s ease-in-out infinite alternate;
+  display: flex;
+  align-items: center;
+}
+
+@keyframes bulbGlow {
+  from {
+    filter: drop-shadow(0 0 4px var(--accent-yellow));
+    opacity: 0.8;
+  }
+  to {
+    filter: drop-shadow(0 0 15px var(--accent-yellow)) brightness(1.2);
+    opacity: 1;
+  }
+}
+
 .nav-brand span {
   font-family: var(--font-display);
   font-size: 1rem;
