@@ -13,7 +13,7 @@ A premium, full-stack digital infrastructure solution for electricity consumer c
 4. Push to your GitHub repository.
 
 ### 2. Backend (Render)
-1. Log in to Railway(https://railway.com)
+1. Log in to [Railway](https://railway.com/).
 2. Click New Project > Deploy from GitHub Repo.
 3. Select your repository containing the backend
 4. Railway will automatically detect your Node.js backend and start deployment.
@@ -67,7 +67,7 @@ A premium, full-stack digital infrastructure solution for electricity consumer c
 ---
 
 ## 📧 Contact Support
-**Technical Lead**: Sayanti and Pragathi
+**Team **: Sayanti and Pragathi
 **Email**: projec262@gmail.com  
-**Office**: Girls Hostel, LPU, Punjab
+
 
