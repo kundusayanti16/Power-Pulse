@@ -13,11 +13,11 @@ A premium, full-stack digital infrastructure solution for electricity consumer c
 4. Push to your GitHub repository.
 
 ### 2. Backend (Render)
-1. Log in to [Render](https://render.com/).
-2. Click **New +** > **Blueprint**.
-3. Connect your GitHub repository.
-4. Render will automatically detect `render.yaml` and set up the `power-pulse-backend`.
-5. In the Render Dashboard, go to your service > **Environment** and add the following keys from your `backend/.env`:
+1. Log in to Railway(https://railway.com)
+2. Click New Project > Deploy from GitHub Repo.
+3. Select your repository containing the backend
+4. Railway will automatically detect your Node.js backend and start deployment.
+5. In the Railway Dashboard, open your project > Variables tab and add the following environment variables from your backend/.env file:
    - `MONGO_URI`
    - `JWT_SECRET`
    - `EMAIL_USER`: Your Gmail address.
